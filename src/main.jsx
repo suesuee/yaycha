@@ -8,6 +8,7 @@ import "@fontsource/roboto/700.css";
 
 import ThemedApp from "./ThemedApp.jsx";
 
+// localhost:3000
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ThemedApp />

@@ -1,6 +1,13 @@
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useMemo } from "react";
 import App from "./App.jsx";
-import { CssBaseLine, ThemeProvider, createTheme } from "@mui/material";
+import {
+  CssBaseline,
+  ThemeProvider,
+  createTheme,
+  Snackbar,
+} from "@mui/material";
+import AppDrawer from "./components/AppDrawer";
+import { deepPurple, grey } from "@mui/material/colors";
 
 const AppContext = createContext();
 
@@ -9,20 +16,65 @@ export function useApp() {
 }
 
 export default function ThemedApp() {
-  const [mode, setMode] = useState("dark");
+  const [showDrawer, setShowDrawer] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [globalMsg, setGlobalMsg] = useState(null);
+  const [auth, setAuth] = useState(null);
+  const [mode, setMode] = useState("dark");
 
-  const theme = createTheme({
-    palette: {
-      mode: mode, // mode state here
-    },
-  });
+  //   const theme = createTheme({
+  //     palette: { mode }, // mode state here
+  //   });
+
+  /*  const theme = useMemo(() => {
+    return createTheme({
+      palette: { mode },
+    });
+  }, [mode]);
+*/
+
+  const theme = useMemo(() => {
+    return createTheme({
+      palette: {
+        mode,
+        primary: deepPurple,
+        banner: mode === "dark" ? grey[800] : grey[200],
+        text: {
+          fade: grey[500],
+        },
+      },
+    });
+  }, [mode]);
 
   return (
     <ThemeProvider theme={theme}>
-      <AppContext.Provider value={{ mode, setMode, showForm, setShowForm }}>
+      <AppContext.Provider
+        value={{
+          showDrawer,
+          setShowDrawer,
+          globalMsg,
+          setGlobalMsg,
+          auth,
+          setAuth,
+          mode,
+          setMode,
+          showForm,
+          setShowForm,
+        }}
+      >
         <App />
-        <CssBaseLine />
+        <AppDrawer />
+        <Snackbar
+          anchorOrigin={{
+            horizontal: "center",
+            vertical: "bottom",
+          }}
+          open={Boolean(globalMsg)}
+          autoHideDuration={6000}
+          onClose={() => setGlobalMsg(null)}
+          message={globalMsg}
+        />
+        <CssBaseline />
       </AppContext.Provider>
     </ThemeProvider>
   );
