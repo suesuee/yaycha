@@ -1,11 +1,13 @@
 import { useState, createContext, useContext, useMemo } from "react";
-import App from "./App.jsx";
+
 import {
   CssBaseline,
   ThemeProvider,
   createTheme,
   Snackbar,
 } from "@mui/material";
+
+import App from "./App.jsx";
 import AppDrawer from "./components/AppDrawer";
 import { deepPurple, grey } from "@mui/material/colors";
 
@@ -19,7 +21,7 @@ export default function ThemedApp() {
   const [showDrawer, setShowDrawer] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [globalMsg, setGlobalMsg] = useState(null);
-  const [auth, setAuth] = useState(null);
+  const [auth, setAuth] = useState(false);
   const [mode, setMode] = useState("dark");
 
   //   const theme = createTheme({

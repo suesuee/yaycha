@@ -17,7 +17,6 @@ import {
   Logout as LogoutIcon,
   PersonAdd as RegisterIcon,
   Login as LoginIcon,
-  Home,
 } from "@mui/icons-material";
 
 import { deepPurple } from "@mui/material/colors";
@@ -85,7 +84,7 @@ export default function AppDrawer() {
               </ListItem>
 
               <ListItem>
-                <ListItemButton onClick={() => setAuth(null)}>
+                <ListItemButton onClick={() => setAuth(false)}>
                   <ListItemIcon>
                     <LogoutIcon color="error" />
                   </ListItemIcon>
