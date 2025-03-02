@@ -12,8 +12,10 @@ export default function Header() {
   const { showForm, setShowForm, mode, setMode, setShowDrawer } = useApp();
 
   return (
+    // AppBar and ToolBar creates a top bar using AppBar component
     <AppBar position="static">
-      <Toolbar>
+      <Toolbar sx={{ display: "flex", alignItems: "center" }}>
+        {/* Open the sidebar (AppDrawer.jsx) when clicked */}
         <IconButton
           color="inherit"
           edge="start"
@@ -26,6 +28,8 @@ export default function Header() {
 
         <Box>
           <IconButton color="inherit" onClick={() => setShowForm(!showForm)}>
+            {" "}
+            {/* Toggle the form */}
             <AddIcon />
           </IconButton>
 

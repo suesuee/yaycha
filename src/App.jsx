@@ -35,9 +35,9 @@ export default function App() {
       <Container maxWidth="sm" sx={{ mt: 4 }}>
         {showForm && <Form add={add} />}
 
-        {data.map((item) => {
-          return <Item key={item.id} item={item} remove={remove} />;
-        })}
+        {data.map((item) => (
+          <Item key={item.id} item={item} remove={remove} />
+        ))}
       </Container>
     </Box>
   );
