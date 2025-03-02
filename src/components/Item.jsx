@@ -8,6 +8,8 @@ import {
 
 import { green } from "@mui/material/colors";
 
+import PropTypes from "prop-types";
+
 export default function Item({ item, remove }) {
   return (
     <Card sx={{ mb: 2 }}>
@@ -23,7 +25,7 @@ export default function Item({ item, remove }) {
             sx={{
               display: "flex",
               flexDirection: "row",
-              justifyContent: "center",
+              alignItems: "center",
               gap: 1,
             }}
           >
@@ -32,11 +34,16 @@ export default function Item({ item, remove }) {
               A few second ago
             </Typography>
           </Box>
-          <IconButton size="small" onClick={() => remove(item.id)}>
-            <DeleteIcon fontSize="inherit" />
+          <IconButton
+            sx={{ color: "text.fade" }}
+            size="small"
+            onClick={() => remove(item.id)}
+          >
+            <DeleteIcon color="inherit" fontSize="inherit" />
           </IconButton>
         </Box>
-        <Typography sx={{ my: 3 }}>{item.content}</Typography>
+
+        <Typography sx={{ my: 3 }}>{item?.content || "No Content"}</Typography>
 
         <Box
           sx={{
@@ -47,9 +54,18 @@ export default function Item({ item, remove }) {
           }}
         >
           <UserIcon fontSize="12" color="info" />
-          <Typography variant="caption">{item.name}</Typography>
+          <Typography variant="caption">{item?.name || "Anonymous"}</Typography>
         </Box>
       </CardContent>
     </Card>
   );
 }
+
+Item.propTypes = {
+  item: PropTypes.shape({
+    id: PropTypes.number.isRequired, // `id` must be a number
+    content: PropTypes.string.isRequired, // `content` must be a string
+    name: PropTypes.string.isRequired, // `name` must be a string
+  }).isRequired,
+  remove: PropTypes.func.isRequired, // `remove` must be a function
+};
