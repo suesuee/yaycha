@@ -1,16 +1,19 @@
 import { useState, createContext, useContext, useMemo } from "react";
-
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
-
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
-import Template from "./Template";
-import Home from "./pages/Home";
 
 import { deepPurple, grey } from "@mui/material/colors";
 
-// Custom Hook
+import Template from "./Template";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Likes from "./pages/Likes";
+import Profile from "./pages/Profile";
+import Comments from "./pages/Comments";
+
 const AppContext = createContext();
+
 export function useApp() {
   return useContext(AppContext);
 }
@@ -24,6 +27,26 @@ const router = createBrowserRouter([
         path: "/",
         element: <Home />,
       },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
+      },
+      {
+        path: "/comments/:id",
+        element: <Comments />,
+      },
+      {
+        path: "/profile/:id",
+        element: <Profile />,
+      },
+      {
+        path: "/likes/:id",
+        element: <Likes />,
+      },
     ],
   },
 ]);
@@ -32,19 +55,8 @@ export default function ThemedApp() {
   const [showDrawer, setShowDrawer] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [globalMsg, setGlobalMsg] = useState(null);
-  const [auth, setAuth] = useState(false);
+  const [auth, setAuth] = useState(null);
   const [mode, setMode] = useState("dark");
-
-  //   const theme = createTheme({
-  //     palette: { mode }, // mode state here
-  //   });
-
-  /*  const theme = useMemo(() => {
-    return createTheme({
-      palette: { mode },
-    });
-  }, [mode]);
-*/
 
   const theme = useMemo(() => {
     return createTheme({
@@ -65,17 +77,17 @@ export default function ThemedApp() {
         value={{
           showDrawer,
           setShowDrawer,
+          showForm,
+          setShowForm,
           globalMsg,
           setGlobalMsg,
           auth,
           setAuth,
           mode,
           setMode,
-          showForm,
-          setShowForm,
         }}
       >
-        <RouterProvider router={router}></RouterProvider>
+        <RouterProvider router={router} />
         <CssBaseline />
       </AppContext.Provider>
     </ThemeProvider>

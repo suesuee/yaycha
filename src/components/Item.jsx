@@ -6,14 +6,23 @@ import {
   Delete as DeleteIcon,
 } from "@mui/icons-material";
 
+import { useNavigate } from "react-router-dom";
+
 import { green } from "@mui/material/colors";
 
 import PropTypes from "prop-types";
 
-export default function Item({ item, remove }) {
+export default function Item({ item, remove, primary }) {
+  const navigate = useNavigate();
+
   return (
     <Card sx={{ mb: 2 }}>
-      <CardContent>
+      {primary && <Box sx={{ height: 50, bgcolor: green[500] }} />}
+
+      <CardContent
+        onClick={() => navigate("/comments/1")}
+        sx={{ cursor: "pointer" }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -37,13 +46,16 @@ export default function Item({ item, remove }) {
           <IconButton
             sx={{ color: "text.fade" }}
             size="small"
-            onClick={() => remove(item.id)}
+            onClick={(e) => {
+              remove(item.id);
+              e.stopPropagation();
+            }}
           >
             <DeleteIcon color="inherit" fontSize="inherit" />
           </IconButton>
         </Box>
 
-        <Typography sx={{ my: 3 }}>{item?.content || "No Content"}</Typography>
+        <Typography sx={{ my: 3 }}>{item.content}</Typography>
 
         <Box
           sx={{
@@ -54,7 +66,7 @@ export default function Item({ item, remove }) {
           }}
         >
           <UserIcon fontSize="12" color="info" />
-          <Typography variant="caption">{item?.name || "Anonymous"}</Typography>
+          <Typography variant="caption">{item.name}</Typography>
         </Box>
       </CardContent>
     </Card>
@@ -68,4 +80,5 @@ Item.propTypes = {
     name: PropTypes.string.isRequired, // `name` must be a string
   }).isRequired,
   remove: PropTypes.func.isRequired, // `remove` must be a function
+  primary: PropTypes.bool, // `primary` is optional and must be a boolean
 };
