@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { Box } from "@mui/material";
+import { Alert, Box } from "@mui/material";
 
 import Form from "../components/Form";
 import Item from "../components/Item";
@@ -11,28 +11,24 @@ export default function Home() {
   const { showForm, setGlobalMsg } = useApp();
 
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   // Connecting to the API
   useEffect(() => {
     const api = import.meta.env.VITE_API;
     fetch(`${api}/content/posts`)
       .then(async (res) => {
-        const result = await res.json();
-
-        setData(
-          result.map((post) => ({
-            ...post,
-            created: post.created || new Date().toISOString(), // Ensure crated exists
-            user: {
-              id: post.user?.id || 0,
-              name: post.user?.name || "Anonymous",
-              username: post.user?.username || "unknown",
-              created: post.user?.created || new Date().toISOString(),
-            },
-          }))
-        );
+        if (res.ok) {
+          setData(await res.json());
+          setLoading(false);
+        } else {
+          setError(true);
+        }
       })
-      .catch((error) => console.error("Error fetching posts: ", error));
+      .catch(() => {
+        setError(true);
+      });
   }, []);
 
   const remove = (id) => {
@@ -45,6 +41,18 @@ export default function Home() {
     setData([{ id, content, name }, ...data]);
     setGlobalMsg("An item added.");
   };
+
+  if (error) {
+    return (
+      <Box>
+        <Alert severity="warning">Cannot fetch data</Alert>
+      </Box>
+    );
+  }
+
+  if (loading) {
+    return <Box sx={{ textAlign: "center" }}>Loading...</Box>;
+  }
 
   return (
     <Box>
