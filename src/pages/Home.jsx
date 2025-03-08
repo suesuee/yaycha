@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Box } from "@mui/material";
 
@@ -10,11 +10,30 @@ import { useApp } from "../ThemedApp";
 export default function Home() {
   const { showForm, setGlobalMsg } = useApp();
 
-  const [data, setData] = useState([
-    { id: 3, content: "Yay, interesting.", name: "Chris" },
-    { id: 2, content: "React is fun.", name: "Bob" },
-    { id: 1, content: "Hello, World!", name: "Alice" },
-  ]);
+  const [data, setData] = useState([]);
+
+  // Connecting to the API
+  useEffect(() => {
+    const api = import.meta.env.VITE_API;
+    fetch(`${api}/content/posts`)
+      .then(async (res) => {
+        const result = await res.json();
+
+        setData(
+          result.map((post) => ({
+            ...post,
+            created: post.created || new Date().toISOString(), // Ensure crated exists
+            user: {
+              id: post.user?.id || 0,
+              name: post.user?.name || "Anonymous",
+              username: post.user?.username || "unknown",
+              created: post.user?.created || new Date().toISOString(),
+            },
+          }))
+        );
+      })
+      .catch((error) => console.error("Error fetching posts: ", error));
+  }, []);
 
   const remove = (id) => {
     setData(data.filter((item) => item.id !== id));

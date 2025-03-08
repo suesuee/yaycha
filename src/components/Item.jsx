@@ -1,16 +1,13 @@
 import { Box, Card, CardContent, Typography, IconButton } from "@mui/material";
-
 import {
   Alarm as TimeIcon,
   AccountCircle as UserIcon,
   Delete as DeleteIcon,
 } from "@mui/icons-material";
-
 import { useNavigate } from "react-router-dom";
-
 import { green } from "@mui/material/colors";
-
 import PropTypes from "prop-types";
+import { formatRelative } from "date-fns";
 
 export default function Item({ item, remove, primary }) {
   const navigate = useNavigate();
@@ -20,7 +17,7 @@ export default function Item({ item, remove, primary }) {
       {primary && <Box sx={{ height: 50, bgcolor: green[500] }} />}
 
       <CardContent
-        onClick={() => navigate("/comments/1")}
+        onClick={() => navigate(`/comments/${item.id}`)}
         sx={{ cursor: "pointer" }}
       >
         <Box
@@ -30,6 +27,7 @@ export default function Item({ item, remove, primary }) {
             justifyContent: "space-between",
           }}
         >
+          {/* Display Post Timestamp */}
           <Box
             sx={{
               display: "flex",
@@ -38,11 +36,15 @@ export default function Item({ item, remove, primary }) {
               gap: 1,
             }}
           >
-            <TimeIcon fontSize="10" color="success" />
+            <TimeIcon fontSize="small" color="success" />
             <Typography variant="caption" sx={{ color: green[500] }}>
-              A few second ago
+              {item.created
+                ? formatRelative(new Date(item.created), new Date())
+                : "No date"}
             </Typography>
           </Box>
+
+          {/* Delete Button */}
           <IconButton
             sx={{ color: "text.fade" }}
             size="small"
@@ -55,8 +57,10 @@ export default function Item({ item, remove, primary }) {
           </IconButton>
         </Box>
 
+        {/* Post Content */}
         <Typography sx={{ my: 3 }}>{item.content}</Typography>
 
+        {/* Display User Info */}
         <Box
           sx={{
             display: "flex",
@@ -65,8 +69,10 @@ export default function Item({ item, remove, primary }) {
             gap: 1,
           }}
         >
-          <UserIcon fontSize="12" color="info" />
-          <Typography variant="caption">{item.name}</Typography>
+          <UserIcon fontSize="small" color="info" />
+          <Typography variant="caption">
+            {item.user?.name || "Anonymous"}
+          </Typography>
         </Box>
       </CardContent>
     </Card>
@@ -75,10 +81,20 @@ export default function Item({ item, remove, primary }) {
 
 Item.propTypes = {
   item: PropTypes.shape({
-    id: PropTypes.number.isRequired, // `id` must be a number
-    content: PropTypes.string.isRequired, // `content` must be a string
-    name: PropTypes.string.isRequired, // `name` must be a string
+    id: PropTypes.number.isRequired,
+    content: PropTypes.string.isRequired,
+    created: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)])
+      .isRequired,
+    user: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
+      created: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.instanceOf(Date),
+      ]).isRequired,
+    }).isRequired,
   }).isRequired,
-  remove: PropTypes.func.isRequired, // `remove` must be a function
-  primary: PropTypes.bool, // `primary` is optional and must be a boolean
+  remove: PropTypes.func.isRequired,
+  primary: PropTypes.bool,
 };
